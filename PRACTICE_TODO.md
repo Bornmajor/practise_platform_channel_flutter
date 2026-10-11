@@ -10,7 +10,7 @@
 - [x] Dart tests + CI on PRs to main
 - [ ] Pigeon – redo the battery channels with type-safe generated code (`feature/pigeon-battery`)
   - [x] Step 1: cleanup – README + roadmap
-  - [ ] Step 2: setup – add `pigeon` dev dependency
+  - [x] Step 2: setup – add `pigeon` dev dependency
   - [ ] Step 3: contract – `pigeons/battery_api.dart`
   - [ ] Step 4: generate Dart + Kotlin code
   - [ ] Step 5: Kotlin – implement generated interfaces
