@@ -5,7 +5,7 @@
   - [x] Step 1: `BatteryStreamHandler.kt` (BroadcastReceiver → EventSink)
   - [x] Step 2: register EventChannel in `MainActivity.kt`
   - [x] Step 3: `BatteryInfo` model + `BatteryState`
-  - [ ] Step 4: listen to the stream in `battery_screen.dart`
+  - [x] Step 4: listen to the stream in `battery_screen.dart`
   - [ ] Step 5: test with emulator / `adb shell dumpsys battery`
 - [ ] Pigeon – redo the battery channels with type-safe generated code
 - [ ] Text-to-Speech – mini SDK wrapper (async init, callbacks to Dart, shutdown)

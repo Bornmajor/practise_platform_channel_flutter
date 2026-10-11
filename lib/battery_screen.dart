@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:practise_platform_channel_flutter/battery_info.dart';
@@ -12,6 +14,8 @@ class BatteryScreen extends StatefulWidget {
 
 class _BatteryScreenState extends State<BatteryScreen> {
   static const platform = MethodChannel('com.example.practise_platform_channel_flutter/battery');
+  // Must match EVENT_CHANNEL in MainActivity.kt
+  static const batteryStream = EventChannel('com.example.practise_platform_channel_flutter/battery_stream');
   // int? _batteryLevel;
   // bool _isLoading = true;
   // String? _errorMessage;
@@ -19,16 +23,52 @@ class _BatteryScreenState extends State<BatteryScreen> {
   //Create single state variable default Loading
   BatteryState _state = BatteryLoading();
 
+  // Keeps the stream subscription so it can be cancelled in dispose
+  StreamSubscription<BatteryInfo>? _subscription;
+
   @override
   void initState() {
     super.initState();
-    // Fetch battery as soon as screen mounts
-    _fetchBatteryLevel();
+    // Start live updates as soon as screen mounts (triggers onListen in Kotlin)
+    _listenToBattery();
+  }
+
+  @override
+  void dispose() {
+    // Stop live updates (triggers onCancel in Kotlin)
+    _subscription?.cancel();
+    super.dispose();
+  }
+
+  void _listenToBattery() {
+    _subscription = batteryStream
+        .receiveBroadcastStream()
+        // Convert raw Map from Kotlin into a typed BatteryInfo
+        .map((event) => BatteryInfo.fromMap(event as Map<Object?, Object?>))
+        .listen(
+          (info) {
+            setState(() {
+              _state = BatterySuccess(info);
+            });
+          },
+          onError: (Object error) {
+            // events.error() in Kotlin arrives here as PlatformException
+            setState(() {
+              _state = BatteryError(
+                error is PlatformException
+                    ? error.message ?? "Error while listening to battery"
+                    : error.toString(),
+              );
+            });
+          },
+        );
   }
 
   Future<void> _fetchBatteryLevel() async {
     try {
       final int result = await platform.invokeMethod('getBatteryLevel');
+      // Screen may have closed while waiting for Kotlin
+      if (!mounted) return;
       // setState(() {
       //   _batteryLevel = result;
       //   _isLoading = false;
@@ -37,6 +77,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
         _state = BatterySuccess(BatteryInfo(level: result));
       });
     } on PlatformException catch (e) {
+      if (!mounted) return;
       // setState(() {
       //   _isLoading = false;
       //   _errorMessage = e.message;
@@ -49,23 +90,51 @@ class _BatteryScreenState extends State<BatteryScreen> {
     }
   }
 
+  String _chargingText(bool? isCharging) => switch (isCharging) {
+    true => '⚡ Charging',
+    false => '🔋 Not charging',
+    null => 'Charging status unknown (one-time read)',
+  };
+
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+
     return Scaffold(
       appBar: AppBar(title: const Text('Device Status')),
       body: Center(
-        child: switch (_state) {
-          BatteryLoading() => const CircularProgressIndicator(),
-          BatteryError(message: final message) => Text(
-            message,
-            style: Theme.of(context).textTheme.bodyLarge
-                ?.copyWith(color: Theme.of(context).colorScheme.error),
-          ),
-          BatterySuccess(info: final info) => Text(
-            'Battery level: ${info.level}%',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            switch (_state) {
+              BatteryLoading() => const CircularProgressIndicator(),
+              BatteryError(message: final message) => Text(
+                message,
+                style: textTheme.bodyLarge
+                    ?.copyWith(color: Theme.of(context).colorScheme.error),
+              ),
+              BatterySuccess(info: final info) => Column(
+                children: [
+                  Text(
+                    'Battery level: ${info.level}%',
+                    style: textTheme.headlineSmall,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    _chargingText(info.isCharging),
+                    style: textTheme.bodyLarge,
+                  ),
+                ],
+              ),
+            },
+            const SizedBox(height: 24),
+            // One-time read through the MethodChannel, for comparison
+            OutlinedButton(
+              onPressed: _fetchBatteryLevel,
+              child: const Text('Refresh once (MethodChannel)'),
+            ),
+          ],
+        ),
       ),
     );
   }
