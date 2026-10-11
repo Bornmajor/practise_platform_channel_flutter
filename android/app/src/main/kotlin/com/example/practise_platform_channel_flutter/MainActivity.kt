@@ -3,6 +3,7 @@ package com.example.practise_platform_channel_flutter
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import io.flutter.plugin.common.EventChannel
 
 import android.content.Context
 import android.os.BatteryManager
@@ -10,6 +11,8 @@ import android.os.BatteryManager
 class MainActivity : FlutterActivity(){
   // Channel identifier
   private val CHANNEL = "com.example.practise_platform_channel_flutter/battery"
+  // Event channel identifier for live battery updates
+  private val EVENT_CHANNEL = "com.example.practise_platform_channel_flutter/battery_stream"
 
   // 
   override fun configureFlutterEngine(flutterEngine: FlutterEngine){
@@ -36,6 +39,10 @@ class MainActivity : FlutterActivity(){
             }
 
     }
+
+    //Register an EventChannel for streaming battery updates
+    EventChannel(flutterEngine.dartExecutor.binaryMessenger, EVENT_CHANNEL)
+        .setStreamHandler(BatteryStreamHandler(applicationContext))
 
   }
 
