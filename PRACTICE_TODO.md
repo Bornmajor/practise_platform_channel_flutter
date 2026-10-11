@@ -13,7 +13,7 @@
   - [x] Step 2: setup – add `pigeon` dev dependency
   - [x] Step 3: contract – `pigeons/battery_api.dart`
   - [x] Step 4: generate Dart + Kotlin code
-  - [ ] Step 5: Kotlin – implement generated interfaces
+  - [x] Step 5: Kotlin – implement generated interfaces
   - [ ] Step 6: Dart – use generated API in `BatteryScreen`
   - [ ] Step 7: tests – update mocks, keep CI green
 - [ ] Refactor – organize the code structure (`refactor/project-structure`)
