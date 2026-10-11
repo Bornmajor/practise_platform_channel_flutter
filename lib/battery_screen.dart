@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:practise_platform_channel_flutter/battery_info.dart';
 import 'package:practise_platform_channel_flutter/battery_state.dart';
 
 class BatteryScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _BatteryScreenState extends State<BatteryScreen> {
       //   _isLoading = false;
       // });
       setState(() {
-        _state = BatterySuccess(result);
+        _state = BatterySuccess(BatteryInfo(level: result));
       });
     } on PlatformException catch (e) {
       // setState(() {
@@ -60,8 +61,8 @@ class _BatteryScreenState extends State<BatteryScreen> {
             style: Theme.of(context).textTheme.bodyLarge
                 ?.copyWith(color: Theme.of(context).colorScheme.error),
           ),
-          BatterySuccess(level: final level) => Text(
-            'Battery level: $level%',
+          BatterySuccess(info: final info) => Text(
+            'Battery level: ${info.level}%',
             style: Theme.of(context).textTheme.bodyLarge,
           ),
         },
