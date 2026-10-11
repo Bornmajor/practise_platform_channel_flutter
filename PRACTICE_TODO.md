@@ -11,7 +11,7 @@
 - [ ] Pigeon – redo the battery channels with type-safe generated code (`feature/pigeon-battery`)
   - [x] Step 1: cleanup – README + roadmap
   - [x] Step 2: setup – add `pigeon` dev dependency
-  - [ ] Step 3: contract – `pigeons/battery_api.dart`
+  - [x] Step 3: contract – `pigeons/battery_api.dart`
   - [ ] Step 4: generate Dart + Kotlin code
   - [ ] Step 5: Kotlin – implement generated interfaces
   - [ ] Step 6: Dart – use generated API in `BatteryScreen`
