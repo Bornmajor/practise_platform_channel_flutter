@@ -2,6 +2,7 @@
 //
 // This file is NOT part of the app. It is the input for the code generator:
 //   dart run pigeon --input pigeons/battery_api.dart
+//   dart format lib/pigeon   (generated Dart is not formatted; CI checks it)
 //
 // It replaces the hand-written channel names, method names and Map keys
 // that had to match between Dart and Kotlin.
