@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  # Check every pull request that targets main
+  pull_request:
+    branches: [main]
+  # Re-check main after a merge
+  push:
+    branches: [main]
+
+# Cancel an older run when new commits are pushed to the same PR
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dart-tests:
+    name: Analyze and test (Dart)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.47.2 # Same version as local development
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test

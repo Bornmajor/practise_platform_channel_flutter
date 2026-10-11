@@ -13,9 +13,13 @@ class BatteryScreen extends StatefulWidget {
 }
 
 class _BatteryScreenState extends State<BatteryScreen> {
-  static const platform = MethodChannel('com.example.practise_platform_channel_flutter/battery');
+  static const platform = MethodChannel(
+    'com.example.practise_platform_channel_flutter/battery',
+  );
   // Must match EVENT_CHANNEL in MainActivity.kt
-  static const batteryStream = EventChannel('com.example.practise_platform_channel_flutter/battery_stream');
+  static const batteryStream = EventChannel(
+    'com.example.practise_platform_channel_flutter/battery_stream',
+  );
   // int? _batteryLevel;
   // bool _isLoading = true;
   // String? _errorMessage;
@@ -110,8 +114,9 @@ class _BatteryScreenState extends State<BatteryScreen> {
               BatteryLoading() => const CircularProgressIndicator(),
               BatteryError(message: final message) => Text(
                 message,
-                style: textTheme.bodyLarge
-                    ?.copyWith(color: Theme.of(context).colorScheme.error),
+                style: textTheme.bodyLarge?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
               ),
               BatterySuccess(info: final info) => Column(
                 children: [
