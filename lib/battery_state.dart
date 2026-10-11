@@ -1,4 +1,4 @@
-import 'package:practise_platform_channel_flutter/battery_info.dart';
+import 'package:practise_platform_channel_flutter/pigeon/battery_api.g.dart';
 
 sealed class BatteryState {}
 
