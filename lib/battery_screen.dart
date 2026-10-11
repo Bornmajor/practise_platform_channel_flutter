@@ -125,10 +125,10 @@ class _BatteryScreenState extends State<BatteryScreen> {
               ),
             },
             const SizedBox(height: 24),
-            // One-time read through the MethodChannel, for comparison
+            // One-time read through the Pigeon HostApi, for comparison
             OutlinedButton(
               onPressed: _fetchBatteryLevel,
-              child: const Text('Refresh once (MethodChannel)'),
+              child: const Text('Refresh once (HostApi)'),
             ),
           ],
         ),

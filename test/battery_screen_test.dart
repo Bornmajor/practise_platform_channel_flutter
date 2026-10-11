@@ -137,7 +137,7 @@ void main() {
       });
 
       await pumpBatteryScreen(tester);
-      await tester.tap(find.text('Refresh once (MethodChannel)'));
+      await tester.tap(find.text('Refresh once (HostApi)'));
       await tester.pump();
 
       expect(calls, 1);
@@ -158,7 +158,7 @@ void main() {
       );
 
       await pumpBatteryScreen(tester);
-      await tester.tap(find.text('Refresh once (MethodChannel)'));
+      await tester.tap(find.text('Refresh once (HostApi)'));
       await tester.pump();
 
       expect(find.text('Battery level not available.'), findsOneWidget);
