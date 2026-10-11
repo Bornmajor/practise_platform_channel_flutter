@@ -5,15 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import io.flutter.plugin.common.EventChannel
 
-class BatteryStreamHandler(private val context: Context) : EventChannel.StreamHandler {
+// Extends the Pigeon-generated BatteryUpdatesStreamHandler.
+// Replaces EventChannel.StreamHandler: the sink now only accepts BatteryInfo.
+class BatteryStreamHandler(private val context: Context) : BatteryUpdatesStreamHandler() {
 
     // Holds the receiver while Dart is listening, null otherwise
     private var receiver: BroadcastReceiver? = null
 
     // Called when Dart starts listening to the stream
-    override fun onListen(arguments: Any?, events: EventChannel.EventSink) {
+    override fun onListen(p0: Any?, sink: PigeonEventSink<BatteryInfo>) {
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 // Read raw values from the system broadcast
@@ -23,7 +24,7 @@ class BatteryStreamHandler(private val context: Context) : EventChannel.StreamHa
 
                 if (level == -1 || scale <= 0) {
                     // Send error to Dart stream (arrives in onError)
-                    events.error("UNAVAILABLE", "Battery info not available.", null)
+                    sink.error("UNAVAILABLE", "Battery info not available.", null)
                     return
                 }
 
@@ -31,11 +32,11 @@ class BatteryStreamHandler(private val context: Context) : EventChannel.StreamHa
                 val isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING ||
                         status == BatteryManager.BATTERY_STATUS_FULL
 
-                // Send a Map to Dart (only simple types can cross the channel)
-                events.success(
-                    mapOf(
-                        "level" to percent,
-                        "isCharging" to isCharging
+                // Send a typed object (replaces mapOf("level" to ..., "isCharging" to ...))
+                sink.success(
+                    BatteryInfo(
+                        level = percent.toLong(),
+                        isCharging = isCharging
                     )
                 )
             }
@@ -46,7 +47,7 @@ class BatteryStreamHandler(private val context: Context) : EventChannel.StreamHa
     }
 
     // Called when Dart cancels the subscription
-    override fun onCancel(arguments: Any?) {
+    override fun onCancel(p0: Any?) {
         // Stop listening to avoid leaks and duplicate events
         receiver?.let { context.unregisterReceiver(it) }
         receiver = null

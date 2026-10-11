@@ -8,14 +8,20 @@
   - [x] Step 4: listen to the stream in `battery_screen.dart`
   - [x] Step 5: test with emulator / `adb shell dumpsys battery`
 - [x] Dart tests + CI on PRs to main
-- [ ] Pigeon – redo the battery channels with type-safe generated code (`feature/pigeon-battery`)
+- [x] Pigeon – redo the battery channels with type-safe generated code (`feature/pigeon-battery`)
   - [x] Step 1: cleanup – README + roadmap
-  - [ ] Step 2: setup – add `pigeon` dev dependency
-  - [ ] Step 3: contract – `pigeons/battery_api.dart`
-  - [ ] Step 4: generate Dart + Kotlin code
-  - [ ] Step 5: Kotlin – implement generated interfaces
-  - [ ] Step 6: Dart – use generated API in `BatteryScreen`
-  - [ ] Step 7: tests – update mocks, keep CI green
+  - [x] Step 2: setup – add `pigeon` dev dependency
+  - [x] Step 3: contract – `pigeons/battery_api.dart`
+  - [x] Step 4: generate Dart + Kotlin code
+  - [x] Step 5: Kotlin – implement generated interfaces
+  - [x] Step 6: Dart – use generated API in `BatteryScreen`
+  - [x] Step 7: tests – update mocks, keep CI green
+- [ ] Refactor – organize the code structure (`refactor/project-structure`)
+  - [ ] Dart: group by feature, e.g. `lib/features/battery/{data,domain,presentation}`
+  - [ ] Dart: wrap the generated Pigeon API in a repository, so the UI doesn't call channels directly
+  - [ ] Kotlin: move battery code into its own package (`.../battery/`)
+  - [ ] Kotlin: register APIs from a small setup class instead of directly in `MainActivity`
+  - [ ] Keep tests green, update README file paths
 - [ ] Native tests – Kotlin unit tests (JUnit + Robolectric), written against the Pigeon version
 - [ ] Text-to-Speech – mini SDK wrapper (async init, callbacks to Dart, shutdown)
 - [ ] ZXing scanner – launch native Activity and return result
